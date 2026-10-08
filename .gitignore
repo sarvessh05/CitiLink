@@ -76,13 +76,12 @@ next-transport-qrcode-app-master/
 *.zip
 *.tar.gz
 
-# Android / Mobile (Future)
-.gradle/
-local.properties
-.idea/caches/
-.idea/libraries/
-*.iml
-app/build/
-build/
+# Android / Mobile
+**/.gradle/
+**/local.properties
+**/.idea/
+**/build/
 *.apk
 *.aab
+*.iml
+

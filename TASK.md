@@ -30,7 +30,7 @@ This document provides a granular, phase-by-phase engineering task breakdown for
 
 - [ ] **Task 2.1: Multi-Bus Route Corridor PIN Allocator**
   - [ ] Implement `PinAllocatorService` managing separate pools:
-    - Senior Citizen pool (`10` to `99`, 90 codes).
+    - Senior Citizen pool (`00` to `99`, 100 codes).
     - Standard Citizen pool (`100` to `999`, 900 codes).
   - [ ] Implement concurrency-safe allocation using PostgreSQL row locking (`SELECT FOR UPDATE SKIP LOCKED`).
   - [ ] Add route corridor collision checks ensuring a PIN is never double-allocated across active unboarded tickets on the same route.
@@ -183,3 +183,9 @@ This document provides a granular, phase-by-phase engineering task breakdown for
 - [ ] **Task 7.3: Performance & Load Testing**
   - [ ] Run Locust / k6 load tests simulating 2,000 requests/sec on PIN verification and GPS ingestion.
   - [ ] Verify $< 150\text{ms}$ p95 response time.
+
+- [ ] **Task 7.4: Decommission & Cleanup of Client Mock Data Engines**
+  - [ ] Refactor `CitiLinkRepository` and mobile data sources to strictly decouple temporary in-memory mock datasets (`NashikTransitData.kt`).
+  - [ ] Deprecate hardcoded simulator triggers once live PostgreSQL PostGIS telemetry feeds and real WebSocket/HTTP streams are operational.
+  - [ ] Verify production release builds enforce live backend endpoints and Room SQLite caching with zero demo/mock test artifacts.
+
