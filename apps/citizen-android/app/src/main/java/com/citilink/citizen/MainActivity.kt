@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,11 +14,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import com.citilink.citizen.data.NashikTransitRepository
 import com.citilink.citizen.data.TransitHub
+import com.citilink.citizen.ui.components.AuthModal
 import com.citilink.citizen.ui.components.CitizenNavTab
 import com.citilink.citizen.ui.components.CitiLinkScaffold
+import com.citilink.citizen.ui.components.HubSwitcherModal
+import com.citilink.citizen.ui.components.UserAuthProfile
 import com.citilink.citizen.ui.screens.ActivePinScreen
 import com.citilink.citizen.ui.screens.BookedTicketResult
 import com.citilink.citizen.ui.screens.BookingScreen
@@ -27,24 +28,35 @@ import com.citilink.citizen.ui.screens.CorridorRadarScreen
 import com.citilink.citizen.ui.screens.HomeScreen
 import com.citilink.citizen.ui.screens.ProfileScreen
 import com.citilink.citizen.ui.theme.CitiLinkTheme
-import com.citilink.citizen.ui.theme.PrimaryLight
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            CitiLinkTheme {
-                CitiLinkMainApp()
+            var isDarkMode by remember { mutableStateOf(false) }
+
+            CitiLinkTheme(darkTheme = isDarkMode) {
+                CitiLinkMainApp(
+                    isDarkMode = isDarkMode,
+                    onToggleDarkMode = { isDarkMode = !isDarkMode }
+                )
             }
         }
     }
 }
 
 @Composable
-fun CitiLinkMainApp() {
+fun CitiLinkMainApp(
+    isDarkMode: Boolean = false,
+    onToggleDarkMode: () -> Unit = {}
+) {
     var selectedTab by remember { mutableStateOf(CitizenNavTab.HOME) }
     var selectedHub by remember { mutableStateOf(NashikTransitRepository.HUB_CBS) }
+    var showHubSwitcher by remember { mutableStateOf(false) }
+    var showAuthModal by remember { mutableStateOf(false) }
+    var userProfile by remember { mutableStateOf(UserAuthProfile()) }
+
     var activeTravelPin by remember { mutableStateOf<String?>("142") }
     var activeTicketDetails by remember {
         mutableStateOf(
@@ -76,13 +88,18 @@ fun CitiLinkMainApp() {
         CitiLinkScaffold(
             selectedTab = selectedTab,
             onTabSelected = { selectedTab = it },
+            cityName = "Nashik • ${selectedHub.standLabel.substringBefore(" ")}",
             screenSubtitle = when (selectedTab) {
                 CitizenNavTab.HOME -> "${selectedHub.name} • Live"
                 CitizenNavTab.CORRIDOR -> "Route 12 Corridor Radar"
                 CitizenNavTab.ACTIVE_PIN -> "Active Travel PIN"
                 CitizenNavTab.PROFILE -> "Passenger Profile"
             },
-            activePinCount = if (activeTravelPin != null) 1 else 0
+            isDarkMode = isDarkMode,
+            activePinCount = if (activeTravelPin != null) 1 else 0,
+            onCityClick = { showHubSwitcher = true },
+            onToggleDarkMode = onToggleDarkMode,
+            onProfileClick = { showAuthModal = true }
         ) {
             when (selectedTab) {
                 CitizenNavTab.HOME -> {
@@ -117,6 +134,30 @@ fun CitiLinkMainApp() {
                 }
             }
         }
+    }
+
+    // Global Hub Switcher Modal (Accessible from any screen via Top Bar or Home Stand pill)
+    if (showHubSwitcher) {
+        HubSwitcherModal(
+            selectedHub = selectedHub,
+            onHubSelected = {
+                selectedHub = it
+                showHubSwitcher = false
+            },
+            onDismissRequest = { showHubSwitcher = false }
+        )
+    }
+
+    // Global Citizen Auth & Registration Modal
+    if (showAuthModal) {
+        AuthModal(
+            currentProfile = userProfile,
+            onProfileUpdated = {
+                userProfile = it
+                showAuthModal = false
+            },
+            onDismissRequest = { showAuthModal = false }
+        )
     }
 }
 

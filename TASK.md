@@ -147,6 +147,12 @@ This document provides a granular, phase-by-phase engineering task breakdown for
     - Live journey tracker updating stop-by-stop once boarded.
   - [ ] Acceptance: End-to-end booking flow yielding active PIN card.
 
+- [ ] **Task 5.5: Citizen Registration, Phone OTP & Senior KYC Profile**
+  - [ ] Build Phone Number Login & Registration modal with 6-digit OTP verification simulation.
+  - [ ] Implement Senior Citizen (60+) KYC verification enabling automated 2-digit PIN routing.
+  - [ ] Implement Secure JWT Token caching and dynamic Dark Mode / Light Mode theme switching.
+
+
 ---
 
 ## Phase 6: Admin Web Portal & Fleet Analytics

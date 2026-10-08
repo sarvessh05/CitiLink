@@ -45,8 +45,13 @@ import com.citilink.citizen.ui.theme.SurfaceLight
 fun CitiLinkScaffold(
     selectedTab: CitizenNavTab,
     onTabSelected: (CitizenNavTab) -> Unit,
+    cityName: String = "Nashik",
     screenSubtitle: String = "Live Radar",
+    isDarkMode: Boolean = false,
     activePinCount: Int = 1,
+    onCityClick: () -> Unit = {},
+    onToggleDarkMode: () -> Unit = {},
+    onProfileClick: () -> Unit = {},
     content: @Composable () -> Unit
 ) {
     var showSosDialog by remember { mutableStateOf(false) }
@@ -54,7 +59,12 @@ fun CitiLinkScaffold(
     Scaffold(
         topBar = {
             TopNavBar(
+                cityName = cityName,
                 currentScreenSubtitle = screenSubtitle,
+                isDarkMode = isDarkMode,
+                onCityClick = onCityClick,
+                onToggleDarkMode = onToggleDarkMode,
+                onProfileClick = onProfileClick,
                 onSosClick = { showSosDialog = true }
             )
         },
@@ -65,7 +75,7 @@ fun CitiLinkScaffold(
                 activePinCount = activePinCount
             )
         },
-        containerColor = SurfaceLight
+        containerColor = if (isDarkMode) PrimaryLight else SurfaceLight
     ) { innerPadding ->
         Box(
             modifier = Modifier

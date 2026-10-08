@@ -40,17 +40,22 @@ import com.citilink.citizen.ui.theme.SurfaceContainerHighLight
 import com.citilink.citizen.ui.theme.SurfaceContainerLowestLight
 import com.citilink.citizen.ui.theme.SurfaceLight
 
+import androidx.compose.material.icons.rounded.DarkMode
+import androidx.compose.material.icons.rounded.LightMode
+
 @Composable
 fun TopNavBar(
     cityName: String = "Nashik",
     currentScreenSubtitle: String = "Live Radar",
+    isDarkMode: Boolean = false,
     onCityClick: () -> Unit = {},
+    onToggleDarkMode: () -> Unit = {},
     onSosClick: () -> Unit = {},
     onProfileClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Surface(
-        color = SurfaceLight.copy(alpha = 0.95f),
+        color = if (isDarkMode) PrimaryLight else SurfaceLight.copy(alpha = 0.95f),
         shadowElevation = 2.dp,
         modifier = modifier.fillMaxWidth()
     ) {
@@ -153,6 +158,23 @@ fun TopNavBar(
                         fontSize = 11.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = AlertRed
+                    )
+                }
+
+                // Dark / Light Theme Toggle Button
+                Box(
+                    modifier = Modifier
+                        .size(34.dp)
+                        .clip(CircleShape)
+                        .background(SurfaceContainerHighLight)
+                        .clickable { onToggleDarkMode() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = if (isDarkMode) Icons.Rounded.LightMode else Icons.Rounded.DarkMode,
+                        contentDescription = "Toggle Theme",
+                        tint = if (isDarkMode) Color(0xFFF59E0B) else PrimaryLight,
+                        modifier = Modifier.size(18.dp)
                     )
                 }
 
